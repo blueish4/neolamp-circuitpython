@@ -4,7 +4,6 @@ import busio
 import adafruit_ds3231
 import digitalio
 import time
-import datetime
 import state
 
 pixels = neopixel.NeoPixel(board.D5, 118, brightness=1, auto_write=False)
@@ -30,15 +29,17 @@ if False:   # change to True if you want to set the time!
     ds3231.datetime = t
     print()
 
+def mktime(hour, minute, next_day=False):
+    return time.struct_time((0, 0, (1 if next_day else 0), hour, minute, 0, 0, 0, 0))
 
 light_on = True
 silenced = False
-midnight = datetime.Time(0,  0)
-sleep    = datetime.Time(2,  0)
-morning  = datetime.Time(7, 30)
-day      = datetime.Time(9,  0)
-evening  = datetime.Time(18, 0)
-night    = datetime.Time(22, 0)
+midnight = mktime(0,  0, True)
+sleep    = mktime(2,  0, True)
+morning  = mktime(7, 30)
+day      = mktime(9,  0)
+evening  = mktime(18, 0)
+night    = mktime(22, 0)
 morning_state = state.State(morning,  day,      0x661100, 0xff6600, "morning")
 day_state     = state.State(day,      evening,  0x404040, 0x404040, "day")
 evening_state = state.State(evening,  night,    0x404040, 0x661100, "evening")
@@ -56,7 +57,7 @@ sleep_state.next_state   = morning_state
 
 current_state.enter(light_on)
 while True:
-    t = ds3231.datetime
+    t = mktime(*ds3231.datetime[3:5], next_day=ds3231.datetime[3] < 2)
     if current_state.is_valid(t):
         if light_on:
             pixels.fill(current_state.display(t))
