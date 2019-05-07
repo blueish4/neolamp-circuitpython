@@ -5,6 +5,8 @@ import adafruit_ds3231
 import digitalio
 import time
 import state
+import random
+import colour
 
 pixels = neopixel.NeoPixel(board.D5, 118, brightness=1, auto_write=False)
 i2c = None
@@ -39,14 +41,14 @@ sleep    = mktime(2,  0, True)
 morning  = mktime(7, 30)
 day      = mktime(9,  0)
 evening  = mktime(18, 0)
-night    = mktime(22, 0)
+night    = mktime(23, 0)
 morning_state = state.State(morning,  day,      0x661100, 0xff6600, "morning")
 day_state     = state.State(day,      evening,  0x404040, 0x404040, "day")
-evening_state = state.State(evening,  night,    0x404040, 0x661100, "evening")
+evening_state = state.State(evening,  night,    0x9802a1, 0x661100, "evening")
 night_state   = state.State(night,    midnight, 0xff0000, 0xff0000, "night")
 late_night_state = state.State(midnight, sleep, 0xff0000, 0xff0000, "latenight")
 sleep_state  = state.State(sleep,     morning,  0x000000, 0x000000, "BEDTIME")
-current_state = night_state
+current_state = morning_state
 current_state.next_state = morning_state
 morning_state.next_state = day_state
 day_state.next_state     = evening_state
@@ -60,10 +62,12 @@ while True:
     t = mktime(*ds3231.datetime[3:5], next_day=ds3231.datetime[3] < 2)
     if current_state.is_valid(t):
         if light_on:
-            pixels.fill(current_state.display(t))
+            for i in range(118):
+                pixels[i] = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
+        time.sleep(1)
+        pixels.show()
     else:
         current_state = current_state.next_state
-        print(current_state.name)
     
     if t.tm_hour > 9:
         # reset silencing button
@@ -73,7 +77,5 @@ while True:
         light_on = True
     current_state.enter(light_on)
 
-    time.sleep(1)
     # Set silenced switch
     # Set light_on switch
-    pixels.show()
