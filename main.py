@@ -63,7 +63,8 @@ while True:
     if current_state.is_valid(t):
         if light_on:
             for i in range(118):
-                pixels[i] = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
+                col = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
+                pixels[i] = col
         time.sleep(1)
         pixels.show()
     else:
