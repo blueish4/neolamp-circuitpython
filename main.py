@@ -34,17 +34,17 @@ if False:   # change to True if you want to set the time!
 def mktime(hour, minute, next_day=False):
     return time.struct_time((0, 0, (1 if next_day else 0), hour, minute, 0, 0, 0, 0))
 
-light_on = False
+light_on = True
 midnight = mktime(0,  0, True)
 sleep    = mktime(2,  0, True)
 morning  = mktime(7, 30)
 day      = mktime(9,  0)
 evening  = mktime(18, 0)
-night    = mktime(23, 0)
+night    = mktime(22, 0)
 morning_state = state.State(morning,  day,      0x661100, 0xff6600, "morning")
 day_state     = state.State(day,      evening,  0x404040, 0x404040, "day")
-evening_state = state.State(evening,  night,    0x600066, 0x661100, "evening")
-night_state   = state.State(night,    midnight, 0xff0000, 0xff0000, "night")
+evening_state = state.State(evening,  night,    0x404040, 0x661100, "evening")
+night_state   = state.State(night,    midnight, 0x600066, 0xff0000, "night")
 late_night_state = state.State(midnight, sleep, 0xff0000, 0xff0000, "latenight")
 sleep_state  = state.State(sleep,     morning,  0x000000, 0x000000, "BEDTIME")
 current_state = morning_state
