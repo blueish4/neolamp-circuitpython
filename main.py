@@ -34,8 +34,7 @@ if False:   # change to True if you want to set the time!
 def mktime(hour, minute, next_day=False):
     return time.struct_time((0, 0, (1 if next_day else 0), hour, minute, 0, 0, 0, 0))
 
-light_on = True
-silenced = False
+light_on = False
 midnight = mktime(0,  0, True)
 sleep    = mktime(2,  0, True)
 morning  = mktime(7, 30)
@@ -65,18 +64,13 @@ while True:
             for i in range(118):
                 col = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
                 pixels[i] = col
-        time.sleep(1)
-        pixels.show()
+            time.sleep(1)
+            pixels.show()
     else:
         current_state = current_state.next_state
-    
-    if t.tm_hour > 9:
-        # reset silencing button
-        silenced = False
-    silenced = t.tm_wday in (0, 6)
-    if (current_state.name == "morning") and not silenced:
+
+    # Set light_on switch
+    if (current_state.name == "morning"):
         light_on = True
     current_state.enter(light_on)
 
-    # Set silenced switch
-    # Set light_on switch
