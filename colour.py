@@ -3,3 +3,31 @@ def mod_brightness(colour, modifier):
     green = min(int(((colour & 0x00ff00) >> 8)  * modifier), 0xff)
     blue  = min(int((colour & 0x0000ff)     * modifier), 0xff)
     return red << 16 | green << 8 | blue
+
+def int_scale_flag(flag_name):
+    with open(flag_name, 'rb') as flag:
+        for byte in flag.read():
+            print()
+
+def bmp_info(flag_name):
+    with open('flags/' + flag_name + '.bmp', 'rb') as flag:
+        # http://www.ue.eti.pg.gda.pl/fpgalab/zadania.spartan3/zad_vga_struktura_pliku_bmp_en.html
+        # header = flag.read(14)
+        # infoheader = flag.read(40)
+        # packing_buffer = b''
+        # print(header)
+        # print(infoheader)
+        # print("size", infoheader[0:4])
+        # print("width", infoheader[4:8])
+        # print("height", infoheader[8:12])
+        # print("planes", infoheader[12:14])
+        # print("bit count", infoheader[14:16])
+        flag.read(0x36) # skip header info
+        buffer = 0
+        raster_data = flag.read()
+        # There is probably a way to make this all comprehensions, but meh
+        col_bytes = [int(raster_data[len(raster_data)-x-1]) for x in range(len(raster_data)) if x%4 != 0]
+        colours = []
+        for pack in range(0,len(col_bytes),3):
+            colours.append(hex((col_bytes[pack]<<16)+(col_bytes[pack+1]<<8)+col_bytes[pack+2]))
+        print(colours)
