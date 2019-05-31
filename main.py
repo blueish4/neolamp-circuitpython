@@ -61,9 +61,12 @@ while True:
     t = mktime(*ds3231.datetime[3:5], next_day=ds3231.datetime[3] < 2)
     if current_state.is_valid(t):
         if light_on:
+            # Needs more gay
+            flag = colour.int_scale_flag("gay", 118)
             for i in range(118):
-                col = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
-                pixels[i] = col
+                #col = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
+                #pixels[i] = col
+                pixels[i] = colour.mod_brightness(flag[i], 0.5)
             time.sleep(1)
             pixels.show()
     else:
