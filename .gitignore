@@ -1,0 +1,3 @@
+*.mpy
+.vscode/
+__init__.py
