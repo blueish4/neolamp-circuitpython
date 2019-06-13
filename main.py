@@ -7,8 +7,8 @@ import time
 import state
 import random
 import colour
-
-pixels = neopixel.NeoPixel(board.D5, 118, brightness=1, auto_write=False)
+pixel_count = 120
+pixels = neopixel.NeoPixel(board.D5, pixel_count, brightness=1, auto_write=False)
 i2c = None
 
 while (i2c is None):
@@ -62,8 +62,8 @@ while True:
     if current_state.is_valid(t):
         if light_on:
             # Needs more gay
-            flag = colour.int_scale_flag("gay", 118)
-            for i in range(118):
+            flag = colour.int_scale_flag("trans", pixel_count)
+            for i in range(pixel_count):
                 #col = colour.mod_brightness(current_state.display(t), random.uniform(0.8, 1.2))
                 #pixels[i] = col
                 pixels[i] = colour.mod_brightness(flag[i], 0.5)
